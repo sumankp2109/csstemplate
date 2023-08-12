@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pythonapps-deployment
+  labels:
+    app: pythonapps
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: pythonapps
+  template:
+    metadata:
+      labels:
+        app: pythonapps
+    spec:
+      containers:
+        - name: pythonapps
+          image: nxtcloud.azurecr.io/newimg1:d1
+          ports:
+            - containerPort: 80
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pythonapps
+  namespace: default
+  labels:
+    app: pythonapps
+spec:
+  externalTrafficPolicy: Local
+  ports:
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80
+  selector:
+    app: pythonapps
+  type: LoadBalancer
